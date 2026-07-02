@@ -1,110 +1,187 @@
-# Customer Segmentation using Machine Learning
+# Jumia Customer Segmentation Project — Team Roles & Task Breakdown
 
-## Project Title
+**Client/Stakeholder:** Mr. Kaloki Joel Nzau, Jumia <br>
+**Project Type:** Unsupervised Machine Learning — Customer Segmentation <br>
+**Framework:** CRISP-DM (Cross-Industry Standard Process for Data Mining)<br>
+**Dataset:** [UCI Online Retail Dataset](https://archive.ics.uci.edu/dataset/352/online%2Bretail) <br>
+**Team Size:** 6
 
-Customer Segmentation using Machine Learning for Jumia
 
-## Overview
+## 1. Project Objective
 
-This repository presents a professional capstone project that applies customer segmentation techniques to support business decision-making in an e-commerce context. The project is framed as a consulting-style analytical engagement for Jumia and follows the CRISP-DM methodology.
+Jumia has thousands of customers but lacks a clear understanding of their purchasing behavior. This project applies unsupervised learning (clustering) on transactional data to answer:
 
-The objective is to transform transaction data into meaningful customer segments that can help the business identify valuable customers, detect at-risk customers, and improve marketing strategy. The work combines business analysis, machine learning, and clear documentation in a format suitable for academic submission and GitHub publication.
+- Who are our customers?
+- Which customers are the most valuable?
+- Which customers are at risk of churn?
+- How should marketing treat each segment differently?
 
-## Business Problem
+The focus is **not** on the number of clusters produced, but on translating each segment into a clear, actionable business narrative.
 
-In a competitive digital retail environment, businesses must understand customer behavior in order to allocate resources effectively and build lasting customer relationships. Jumia, like many e-commerce companies, faces the challenge of managing a large and diverse customer base with different purchasing behaviors.
+---
 
-Some customers are highly valuable and purchase regularly, while others may be occasional buyers or at risk of disengagement. Without a structured segmentation approach, it becomes difficult to target campaigns efficiently, retain customers, and maximize revenue.
+## 2. Team Members
 
-This project addresses that challenge by using machine learning to uncover customer segments based on historical transaction behavior.
+| # | Name | Primary Phase(s) Owned | Role Title |
+|---|------|------------------------|-------------|
+| 1 | Trevor | Business Understanding (Problem & Solution) |  Business Analyst |
+| 2 | Ibrahim | Data Understanding & Data Preparation | Data Engineer |
+| 3 | Mary | Exploratory Data Analysis (EDA) | Data Analyst |
+| 4 | Godwin | Modelling (RFM & Clustering) | Project Lead/ Machine Learning Engineer |
+| 5 | Elvis | Evaluation & Model Validation | ML Evaluation Lead |
+| 6 |Mohamed | Recommendations, Conclusion & Documentation | Insights & Reporting Lead |
 
-## Objectives
+The six roles map directly onto the CRISP-DM stages requested (Problem, Solution, Data, Data Preparation, EDA, Modelling, Evaluation, Recommendations, Conclusion), grouped into **six balanced workstreams** so that each person owns a full, meaningful slice of the pipeline rather than a fragment.
 
-The key objectives of this project are to:
+---
 
-- translate the project brief into a formal business problem,
-- define customer value and customer risk,
-- apply RFM analysis to understand purchasing patterns,
-- use clustering to discover customer segments,
-- and present actionable insights for business use.
+## 3. Detailed Role Breakdown
 
-## Dataset
+### 3.1 Trevor — Project Lead / Business Analyst
+**CRISP-DM Phase(s):** Business Understanding (Problem Statement + Proposed Solution)
 
-This project uses the Online Retail Dataset (UCI), which contains transactional retail data suitable for customer behavior analysis. Although the dataset is not from Jumia directly, it provides a realistic foundation for demonstrating customer segmentation techniques that are directly relevant to e-commerce strategy.
+**Responsibilities:**
+- Translate Mr. Kaloki's brief into a formal problem statement (business objectives, data mining objectives, success criteria).
+- Define what "customer value" and "customer risk" mean in business terms before any modelling begins.
+- Draft the proposed solution approach (why clustering/RFM is the right method).
 
-## Repository Structure
 
-- [01_business_understanding.md](01_business_understanding.md) — business analysis and problem framing
-- [02_project_charter.md](02_project_charter.md) — project scope, goals, timeline, and responsibilities
-- [03_weekly_progress_tracker.md](03_weekly_progress_tracker.md) — sprint planning and weekly progress tracking
-- [Netflix_Movie_Recommendation_System.ipynb](Netflix_Movie_Recommendation_System.ipynb) — existing notebook workspace file
 
-## CRISP-DM
+**Deliverables:**
+- `01_business_understanding.md` — Problem statement, business objectives, success criteria, constraints.
+- Project charter (goals, scope, timeline, risks).
 
-This project follows the CRISP-DM lifecycle:
+---
 
-1. Business Understanding
-2. Data Understanding
-3. Data Preparation
-4. Modeling
-5. Evaluation
-6. Deployment Thinking
+### 3.2 Ibrahim — Data Engineer
+**CRISP-DM Phase(s):** Data Understanding + Data Preparation
 
-## Installation
+**Responsibilities:**
+- Acquire and load the UCI Online Retail dataset; document schema, size, and data dictionary.
+- Assess data quality: missing values (e.g., missing `CustomerID`), duplicates, cancelled orders (`InvoiceNo` starting with "C"), negative quantities/prices.
+- Handle data cleaning: remove/flag invalid transactions, treat outliers, handle returns.
+- Engineer base features required downstream (e.g., `TotalPrice = Quantity * UnitPrice`, date parsing).
+- Prepare the clean, analysis-ready dataset and freeze it as a versioned artifact for the rest of the team.
 
-To work with the project locally, install the required Python packages:
+**Deliverables:**
+- `02_data_understanding.ipynb` — data profiling, quality report, data dictionary.
+- `03_data_preparation.ipynb` — cleaning pipeline, transformation logic.
+- `data/processed/online_retail_clean.csv` — the shared clean dataset used by all downstream notebooks.
+- Data quality report (`data_quality_report.md`) summarizing issues found and how they were resolved.
 
-```bash
-pip install pandas numpy matplotlib seaborn scikit-learn
+---
+
+### 3.3 Mary — Data Analyst (EDA)
+**CRISP-DM Phase(s):** Exploratory Data Analysis
+
+**Responsibilities:**
+- Explore purchasing patterns: frequency distributions, seasonality, top products/countries, order value distributions.
+- Investigate customer-level behavior patterns (recency of last purchase, order frequency, spend variability).
+- Visualize relationships that hint at natural customer groupings (e.g., spend vs. frequency scatter plots).
+- Surface early business hypotheses to hand off to the modelling team (e.g., "a large group of customers buy once and never return").
+- Produce clear, presentation-ready charts for the final report.
+
+**Deliverables:**
+- `04_exploratory_data_analysis.ipynb` — full EDA with visualizations and narrative commentary.
+- `figures/` folder of exported charts used in the final report.
+- EDA summary (`eda_key_findings.md`) — 8–10 key observations feeding into modelling and recommendations.
+
+---
+
+### 3.4 Godwin — Machine Learning Engineer
+**CRISP-DM Phase(s):** Modelling
+
+**Responsibilities:**
+- Engineer RFM (Recency, Frequency, Monetary) features at the customer level, building on Ibrahim's cleaned dataset.
+- Scale/transform features appropriately (log transforms, standardization) for clustering.
+- Test and compare clustering approaches (e.g., K-Means, Hierarchical Clustering, DBSCAN) and determine an appropriate number of segments (elbow method, silhouette analysis) — while keeping in mind the client's note that the cluster *count* is secondary to cluster *meaning*.
+- Assign each customer to a final segment.
+
+**Deliverables:**
+- `05_modelling.ipynb` — RFM feature engineering, model selection, clustering pipeline.
+- `models/` folder with saved model artifacts (e.g., pickled scaler + clustering model).
+- `data/processed/customer_segments.csv` — final dataset with cluster labels per customer.
+
+---
+
+### 3.5 Elvis — ML Evaluation Lead
+**CRISP-DM Phase(s):** Evaluation
+
+**Responsibilities:**
+- Validate cluster quality using quantitative metrics (silhouette score, Davies–Bouldin index, within-cluster sum of squares) and qualitative business-sense checks.
+- Profile each segment statistically (mean/median Recency, Frequency, Monetary per cluster) and check for stability/robustness (e.g., re-running with different seeds or subsets).
+- Name and characterize each segment in plain business language (e.g., "Champions," "At-Risk," "One-Time Buyers," "Loyal Low-Spenders").
+- Sanity-check that segments are actionable and distinguishable — not just statistically valid but business-meaningful, directly answering the client's four core questions.
+
+**Deliverables:**
+- `06_evaluation.ipynb` — cluster validation metrics, segment profiling tables/charts.
+- `segment_profiles.md` — one-page profile per segment (who they are, size, value, risk level).
+- Evaluation summary confirming which model/segmentation was selected as final, and why.
+
+---
+
+### 3.6 Mohamed — Insights & Reporting Lead
+**CRISP-DM Phase(s):** Recommendations + Conclusion (+ final documentation/QA)
+
+**Responsibilities:**
+- Translate each validated segment (from Elvis) into concrete, actionable marketing recommendations (e.g., retention campaigns for at-risk customers, loyalty perks for high-value customers, win-back offers for one-time buyers).
+- Write the project conclusion tying all CRISP-DM phases back to the original business questions.
+- Assemble the final end-to-end report/notebook combining everyone's outputs into one coherent narrative.
+- Perform final QA pass on the repository: check notebooks run top-to-bottom, check consistent formatting, verify all deliverables are present.
+- Prepare a short executive summary / stakeholder-facing slide or one-pager suitable for presenting to Mr. Kaloki.
+
+**Deliverables:**
+- `07_recommendations.md` — per-segment marketing strategy recommendations.
+- `08_conclusion.md` — project conclusion linking back to business objectives.
+- `Final_Report.ipynb` or `Final_Report.md` — consolidated end-to-end CRISP-DM report.
+- Executive summary (1-page PDF or slide) for stakeholder presentation.
+- Final repository QA checklist (sign-off before submission).
+
+---
+
+## 4. Repository Structure
+
+```
+jumia-customer-segmentation-crispdm/
+│
+├── README.md
+├── requirements.txt
+│
+├── data/
+│   ├── raw/                     # Original UCI dataset (untouched)
+│   └── processed/                # Cleaned data + final segmented dataset
+│
+├── notebooks/
+│   ├── 01_business_understanding.md
+│   ├── 02_data_understanding.ipynb
+│   ├── 03_data_preparation.ipynb
+│   ├── 04_exploratory_data_analysis.ipynb
+│   ├── 05_modelling.ipynb
+│   ├── 06_evaluation.ipynb
+│   ├── 07_recommendations.md
+│   ├── 08_conclusion.md
+│   └── Final_Report.ipynb
+│
+├── figures/                      # All exported charts/visuals
+├── models/                       # Saved model artifacts
+├── reports/
+│   ├── data_quality_report.md
+│   ├── eda_key_findings.md
+│   ├── segment_profiles.md
+│   └── executive_summary.pdf
+│
+└── docs/
+    └── project_charter.md
 ```
 
-## Requirements
+---
 
-The project uses the following tools and libraries:
 
-- Python 3.8+
-- pandas
-- NumPy
-- matplotlib
-- seaborn
-- scikit-learn
 
-## Workflow
+## 5. Collaboration Guidelines
 
-The workflow for this project is as follows:
-
-1. Understand the business problem and define objectives.
-2. Explore and prepare the dataset.
-3. Create customer-level RFM features.
-4. Apply clustering techniques to discover segments.
-5. Interpret the results and translate them into business recommendations.
-
-## Results
-
-The expected outcome of this project is a practical customer segmentation framework that helps identify:
-
-- high-value customers,
-- frequent buyers,
-- occasional buyers,
-- and customers who may require retention efforts.
-
-## Future Work
-
-Future enhancements could include:
-
-- applying more advanced clustering methods,
-- integrating real-world customer transaction data,
-- building a dashboard for segment monitoring,
-- and linking segmentation outcomes to marketing automation.
-
-## Contributors
-
-- Trevor — Project Lead, Business Analyst, Scrum Master, and Technical Writer
-
-## License
-
-This project is intended for academic and educational purposes.
-
-## Acknowledgements
-
-Special thanks to the UCI Machine Learning Repository for providing the Online Retail Dataset and to the open-source Python community for the tools used in this analysis.
+- **Branching:** Each member works on a feature branch named `feature/<name>-<phase>` (e.g., `feature/mohamed-modelling`) and merges into `main` via Pull Request.
+- **Code Review:** At least one other team member reviews each PR before merging.
+- **Data Contract:** Ibrahim's cleaned dataset (`data/processed/online_retail_clean.csv`) is the single source of truth — no one re-cleans data independently.
+- **Notebook Standards:** Every notebook starts with a markdown cell stating its CRISP-DM phase, owner, and objective.
+- **Communication:** Timely async stand-up (Mattermost/WhatsApp).
